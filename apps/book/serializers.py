@@ -64,6 +64,10 @@ class PostBookSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     pass
 
-class ExcangeType(serializers.ModelSerializer): pass
+class ExchangeTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExchangeType
+        fields = ['id', 'name', 'description', 'creation_date', 'update_date']
+        read_only_fields = ['id', 'creation_date', 'update_date']
 
 class BooskStatusSerializer(serializers.ModelSerializer): pass

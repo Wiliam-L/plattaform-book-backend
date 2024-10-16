@@ -1,3 +1,4 @@
+
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
@@ -19,3 +20,5 @@ urlpatterns = [
     path('showEmailVerification/', getEmailVerification.as_view(), name='showEmail'),
     path('showicon/', getIcon.as_view(), name='showicon')
 ]
+
+

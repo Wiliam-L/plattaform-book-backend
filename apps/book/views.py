@@ -27,9 +27,10 @@ class PostBookViewSet(ModelViewSet):
     CRUD para un post de libros
     """
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = PostBook.objects.all()
     serializer_class = PostBookSerializer
-    
+   
 
 class UploadView(APIView):
     """

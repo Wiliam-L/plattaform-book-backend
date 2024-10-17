@@ -5,20 +5,20 @@ from apps.authentication.models import CustomUser
 class CategoryBook(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=255, blank=True)
-    creation_date =  models.DateTimeField(auto_now_add=True),
+    creation_date =  models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 #tipo de intercambio ejem: gratis, intercambio
 class ExchangeType(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=255, blank=True)
-    creation_date =  models.DateTimeField(auto_now_add=True),
+    creation_date =  models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 #modelo para libro o para el post del mismo
@@ -34,15 +34,15 @@ class PostBook(models.Model):
     creation_date =  models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'autor: {self.user.username} - libro: {self.name}'
 
 #para saber si se llevo a cabo un intercambio
 class BookStatus(models.Model):
     book = models.OneToOneField(PostBook, on_delete=models.CASCADE)
     book_exchange_status = models.BooleanField(default=False)
-    creation_date =  models.DateTimeField(auto_now_add=True),
+    creation_date =  models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'libro: {self.book.name} - intercambiado: {self.book_exchange_status}'

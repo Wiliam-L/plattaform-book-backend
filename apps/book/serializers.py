@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db.transaction import atomic
+from django.db import IntegrityError
 from .models import BookStatus, CategoryBook, ExchangeType, PostBook, CustomUser
 from cloudinary.uploader import upload
 
@@ -76,14 +77,75 @@ class PostBookSerializer(serializers.ModelSerializer):
             print(f"Error subiendo la imagen: {str(e)}")
 
             raise e
+    
+    def to_representation(self, instance):
+        representation =  super().to_representation(instance)
+        representation['creation_date'] = instance.creation_date.strftime('%Y-%m-%d %H:%M:%S')
+        representation['update_date'] = instance.update_date.strftime('%Y-%m-%d %H:%M:%S')
+        return representation
 
 class CategorySerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = CategoryBook
+        fields = ['id', 'name', 'description', 'creation_date', 'update_date']
+        read_only_fields = ['id', 'creation_date', 'update_date']
+
+    def validate(self, data):
+        instance = self.instance
+        name = data.get('name', instance.name if instance else None)
+        description = data.get('description', instance.description if instance else None)
+
+        if not CategoryBook.objects.filter(name__iexact=name).exclude(id=instance.id if instance else None).exists():
+            raise serializers.ValidationError({'message': 'El nombre ya esta en uso'})
+        return data
+
+    def create(self, validated_data):
+        try:
+            category = CategoryBook.objects.create(**validated_data)
+            return category
+        except ValueError as e:
+            raise serializers.ValidationError({f'Erro de valir: {str(e)}'})
+        except IntegrityError as e:
+            raise serializers.ValidationError({f'Error de integridad: {str(e)}'})
+        except Exception as e:
+            raise serializers.ValidationError(f"Ocurrió un error al crear la categoría: {str(e)}")
+        
+    def to_representation(self, instance):
+        representation =  super().to_representation(instance)
+        representation['creation_date'] = instance.creation_date.strftime('%Y-%m-%d %H:%M:%S')
+        representation['update_date'] = instance.update_date.strftime('%Y-%m-%d %H:%M:%S')
+        return representation
 
 class ExchangeTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExchangeType
         fields = ['id', 'name', 'description', 'creation_date', 'update_date']
         read_only_fields = ['id', 'creation_date', 'update_date']
+
+    def validate(self, data):
+        instance = self.instance
+        name = data.get('name', instance.name if instance else None)
+        description = self.data.get('description', instance.description if instance else None)
+
+        if not ExchangeType.objects.filter(name__iexact=name).exclude(id=instance.id if instance else None).exists():
+            raise serializers.ValidationError({'message': 'Nombre en uso'})
+
+    @atomic
+    def create(self, validated_data):
+        try:
+            tipe = ExchangeType.objects.create(**validated_data)
+            return tipe
+        except ValueError as e:
+            raise serializers.ValidationError({f'Erro de valir: {str(e)}'})
+        except IntegrityError as e:
+            raise serializers.ValidationError({f'Error de integridad: {str(e)}'})
+        except Exception as e:
+            raise serializers.ValidationError(f"Ocurrió un error al crear la categoría: {str(e)}")
+
+    def to_representation(self, instance):
+        representation =  super().to_representation(instance)
+        representation['creation_date'] = instance.creation_date.strftime('%Y-%m-%d %H:%M:%S')
+        representation['update_date'] = instance.update_date.strftime('%Y-%m-%d %H:%M:%S')
+        return representation
 
 class BooskStatusSerializer(serializers.ModelSerializer): pass

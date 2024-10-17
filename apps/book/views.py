@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import PostBook
-from .serializers import PostBookSerializer
+from .models import PostBook, CategoryBook, ExchangeType
+from .serializers import PostBookSerializer, CategorySerializer, ExchangeTypeSerializer
 from cloudinary.uploader import upload
 from  .api_cloudinary import api_cloudinary
 api_cloudinary()
@@ -26,12 +26,11 @@ class PostBookViewSet(ModelViewSet):
     """
     CRUD para un post de libros
     """
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated]
     queryset = PostBook.objects.all()
     serializer_class = PostBookSerializer
    
-
 class UploadView(APIView):
     """
     clase de prueba para subir la imagen
@@ -57,5 +56,16 @@ class UploadView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        
+class CategoryView(ModelViewSet):
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated]
+    queryset = CategoryBook.objects.all()
+    serializer_class = CategorySerializer
+
+
+class ExchageTypeView(ModelViewSet):
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated]
+    queryset = ExchangeType.objects.all()
+    serializer_class = ExchangeTypeSerializer
 

@@ -3,10 +3,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostBookViewSet, UploadView
+from .views import PostBookViewSet, UploadView, CategoryView, ExchageTypeView
 
 router = DefaultRouter()
 router.register(r'postbook', PostBookViewSet, basename='postbook')
+router.register(r'category', CategoryView, basename='category')
+router.register(r'typeExchange', ExchageTypeView, basename='type')
 
 urlpatterns = [
     path('', include(router.urls)),
